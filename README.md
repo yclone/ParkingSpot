@@ -65,6 +65,87 @@ export FLASK_ENV=development
 flask run
 ```
 
+
+## Configuração e Execução Local
+
+### Ambiente Virtual
+É altamente recomendado usar um ambiente virtual para isolar as dependências do projeto:
+
+1. Criar ambiente virtual:
+```bash
+# Windows
+python -m venv venv
+
+# Linux/MacOS
+python3 -m venv venv
+```
+
+2. Ativar ambiente virtual:
+```bash
+# Windows
+venv\Scripts\activate
+
+# Linux/MacOS
+source venv/bin/activate
+```
+
+### Instalação
+1. Clone o repositório
+```bash
+git clone [url-do-repositorio]
+cd [nome-do-diretorio]
+```
+
+2. Ative o ambiente virtual (conforme instruções acima)
+
+3. Instale as dependências
+```bash
+pip install -r requirements.txt
+```
+
+### Execução Local
+1. Inicialize o banco de dados:
+```bash
+# Navegar ate a pasta app do projeto
+cd ../TR-AI/app
+```
+
+2. Execute o servidor de desenvolvimento:
+```bash
+python src/app.py
+```
+
+O aplicativo estará disponível em `http://localhost:5000`
+
+### Testes
+
+1. Instalação das dependências de teste:
+```bash
+pip install pytest pytest-cov
+```
+
+2. Executar todos os testes:
+```bash
+pytest
+```
+
+3. Executar testes com cobertura:
+```bash
+pytest --cov=src tests/
+```
+
+4. Para ver o relatório de cobertura detalhado:
+```bash
+pytest --cov=src tests/ --cov-report=html
+```
+O relatório será gerado na pasta `htmlcov/`
+
+### Desativando o Ambiente Virtual
+Quando terminar de trabalhar no projeto:
+```bash
+deactivate
+```
+
 ## APIs Disponíveis
 
 ### Usuários
