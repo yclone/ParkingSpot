@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: white;
+            height: 100vh;
+            padding: 20px 0;
+        }
+
+        .sidebar-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-item:hover {
+            background-color: #444;
+        }
+
+        .sidebar-item.active {
+            background-color: #555;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 250px; /* Same as sidebar width */
+            height: 60px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-button {
+            background-color: #FFB6C1;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .logout-button:hover {
+            background-color: #FF69B4;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #f0f8ff;
+            margin-top: 60px; /* Add margin to account for topbar */
+        }
+
+        .section {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+
+        .button {
+            background-color: #add8e6;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background-color: #87ceeb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @media (max-height: 600px) {
+            .modal-content {
+                top: 0;
+                transform: translate(-50%, 0);
+                margin: 20px 0;
+            }
+        }
+
+        /* Para telas menores */
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background-color: #90EE90;
+            color: #006400;
+        }
+
+        .error {
+            background-color: #FFB6C1;
+            color: #8B0000;
+        }
+
+        .modal input, .modal select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .modal button {
+            width: 100%;
+            background-color: #add8e6;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal button:hover {
+            background-color: #87ceeb;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-item" onclick="showSection('users')">Gerenciar Usuários</div>
+        <div class="sidebar-item" onclick="showSection('parking')">Gerenciar Vagas</div>
+    </div>
+
+    <div class="topbar">
+        <div class="user-info">
+            <span id="userName">Carregando...</span>
+            <button class="logout-button" onclick="handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="users" class="section">
+            <h2>Gerenciamento de Usuários</h2>
+            <button class="button" onclick="openModal('userModal')">Novo Usuário</button>
+            <div class="grid" id="users-grid"></div>
+        </div>
+
+        <div id="parking" class="section">
+            <h2>Gerenciamento de Vagas</h2>
+            <button class="button" onclick="openModal('parkingModal')">Nova Vaga</button>
+            <div class="grid" id="vehicles-grid"></div>
+        </div>
+    </div>
+
+    <!-- User Registration Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('userModal')">&times;</span>
+            <h2>Cadastro de Usuário</h2>
+            <div id="userMessage" class="message"></div>
+            <form id="userForm" onsubmit="handleUserSubmit(event)">
+                <input type="text" id="nome" placeholder="Nome" required>
+                <input type="text" id="sobrenome" placeholder="Sobrenome" required>
+                <input type="email" id="email" placeholder="E-mail" required>
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Senha" required>
+                <button class="button" type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Parking Spot Registration Modal -->
+    <div id="parkingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('parkingModal')">&times;</span>
+            <h2>Cadastro de Vaga</h2>
+            <div id="parkingMessage" class="message"></div>
+            <form id="parkingForm" onsubmit="handleParkingSubmit(event)">
+                <select id="user_id" required>
+                    <option value="">Selecione o Proprietário</option>
+                </select>
+                <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required>
+                <input type="text" id="spot_number" placeholder="Número da Vaga" required>
+                <input type="text" id="apartment" placeholder="Apartamento" required>
+                <input type="text" id="block" placeholder="Bloco" required>
+                <button class="button" type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add these modals after your existing modals -->
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editUserModal')">&times;</span>
+            <h2>Editar Usuário</h2>
+            <div id="editUserMessage" class="message"></div>
+            <form id="editUserForm" onsubmit="handleEditUserSubmit(event)">
+                <input type="hidden" id="edit_user_id">
+                <input type="text" id="edit_nome" placeholder="Nome" required>
+                <input type="text" id="edit_sobrenome" placeholder="Sobrenome" required>
+                <input type="email" id="edit_email" placeholder="E-mail" required>
+                <input type="text" id="edit_username" placeholder="Username" required>
+                <input type="password" id="edit_password" placeholder="Nova Senha (opcional)">
+                <button class="button" type="submit">Atualizar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Parking Modal -->
+    <div id="editParkingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('editParkingModal')">&times;</span>
+            <h2>Editar Vaga</h2>
+            <div id="editParkingMessage" class="message"></div>
+            <form id="editParkingForm" onsubmit="handleEditParkingSubmit(event)">
+                <input type="hidden" id="edit_parking_id">
+                <select id="edit_user_id" required>
+                    <option value="">Selecione o Proprietário</option>
+                </select>
+                <input type="text" id="edit_vehicle_plate" placeholder="Placa do Veículo" required>
+                <input type="text" id="edit_spot_number" placeholder="Número da Vaga" required>
+                <input type="text" id="edit_apartment" placeholder="Apartamento" required>
+                <input type="text" id="edit_block" placeholder="Bloco" required>
+                <button class="button" type="submit">Atualizar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Load data for the selected section
+            if (sectionId === 'users') {
+                loadUsers();
+            } else if (sectionId === 'parking') {
+                loadVehicles();
+            }
+        }
+
+        async function loadUsers() {
+            const response = await fetch('/users');
+            const users = await response.json();
+            const grid = document.getElementById('users-grid');
+            
+            grid.innerHTML = users.map(user => `
+                <div class="card">
+                    <h3>${user.first_name} ${user.last_name}</h3>
+                    <p>Email: ${user.email}</p>
+                    <p>Username: ${user.username}</p>
+                    <button class="button" onclick="editUser(${user.id})">Editar</button>
+                </div>
+            `).join('');
+        }
+
+        async function loadVehicles() {
+            const response = await fetch('/parking_spots');
+            const vehicles = await response.json();
+            const grid = document.getElementById('vehicles-grid');
+            
+            grid.innerHTML = vehicles.map(vehicle => `
+                <div class="card">
+                    <h3>Placa: ${vehicle.vehicle_plate}</h3>
+                    <p>Vaga: ${vehicle.spot_number}</p>
+                    <p>Apartamento: ${vehicle.apartment}</p>
+                    <p>Bloco: ${vehicle.block}</p>
+                    <button class="button" onclick="editVehicle(${vehicle.id})">Editar</button>
+                    <button class="button" onclick="deleteVehicle(${vehicle.id})">Excluir</button>
+                </div>
+            `).join('');
+        }
+
+        async function editUser(userId) {
+            const response = await fetch(`/user/${userId}`);
+            const user = await response.json();
+            
+            document.getElementById('edit_user_id').value = user.id;
+            document.getElementById('edit_nome').value = user.first_name;
+            document.getElementById('edit_sobrenome').value = user.last_name;
+            document.getElementById('edit_email').value = user.email;
+            document.getElementById('edit_username').value = user.username;
+            document.getElementById('edit_password').value = '';
+            
+            openModal('editUserModal');
+        }
+
+        async function editVehicle(vehicleId) {
+            const response = await fetch(`/parking_spot/${vehicleId}`);
+            const vehicle = await response.json();
+            
+            await loadUsersForSelect('edit_user_id');
+            document.getElementById('edit_parking_id').value = vehicle.id;
+            document.getElementById('edit_user_id').value = vehicle.user_id;
+            document.getElementById('edit_vehicle_plate').value = vehicle.vehicle_plate;
+            document.getElementById('edit_spot_number').value = vehicle.spot_number;
+            document.getElementById('edit_apartment').value = vehicle.apartment;
+            document.getElementById('edit_block').value = vehicle.block;
+            
+            openModal('editParkingModal');
+        }
+
+        async function deleteVehicle(vehicleId) {
+            if (confirm('Tem certeza que deseja excluir este veículo?')) {
+                try {
+                    const response = await fetch(`/delete_parking_spot/${vehicleId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        loadVehicles();
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir veículo:', error);
+                }
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            if (modalId === 'parkingModal') {
+                loadUsersForSelect();
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        async function loadUsersForSelect(selectId = 'user_id') {
+            const response = await fetch('/users');
+            const users = await response.json();
+            const select = document.getElementById(selectId);
+            
+            select.innerHTML = '<option value="">Selecione o Proprietário</option>' +
+                users.map(user => `
+                    <option value="${user.id}">${user.first_name} ${user.last_name}</option>
+                `).join('');
+        }
+
+        async function handleUserSubmit(event) {
+            event.preventDefault();
+            const messageDiv = document.getElementById('userMessage');
+            
+            const data = {
+                first_name: document.getElementById('nome').value,
+                last_name: document.getElementById('sobrenome').value,
+                email: document.getElementById('email').value,
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('/register_user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.style.display = 'block';
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    document.getElementById('userForm').reset();
+                    setTimeout(() => {
+                        closeModal('userModal');
+                        messageDiv.style.display = 'none';
+                        loadUsers();
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao cadastrar usuário';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        async function handleParkingSubmit(event) {
+            event.preventDefault();
+            const messageDiv = document.getElementById('parkingMessage');
+            
+            const data = {
+                user_id: parseInt(document.getElementById('user_id').value),
+                vehicle_plate: document.getElementById('vehicle_plate').value,
+                spot_number: document.getElementById('spot_number').value,
+                apartment: document.getElementById('apartment').value,
+                block: document.getElementById('block').value
+            };
+
+            try {
+                const response = await fetch('/register_parking_spot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.style.display = 'block';
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    document.getElementById('parkingForm').reset();
+                    setTimeout(() => {
+                        closeModal('parkingModal');
+                        messageDiv.style.display = 'none';
+                        loadVehicles();
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao cadastrar vaga';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        async function handleEditUserSubmit(event) {
+            event.preventDefault();
+            const userId = document.getElementById('edit_user_id').value;
+            const messageDiv = document.getElementById('editUserMessage');
+            
+            const data = {
+                first_name: document.getElementById('edit_nome').value,
+                last_name: document.getElementById('edit_sobrenome').value,
+                email: document.getElementById('edit_email').value,
+                username: document.getElementById('edit_username').value
+            };
+            
+            const password = document.getElementById('edit_password').value;
+            if (password) data.password = password;
+
+            try {
+                const response = await fetch(`/user/${userId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.style.display = 'block';
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    setTimeout(() => {
+                        closeModal('editUserModal');
+                        loadUsers();
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao atualizar usuário';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        async function handleEditParkingSubmit(event) {
+            event.preventDefault();
+            const parkingId = document.getElementById('edit_parking_id').value;
+            const messageDiv = document.getElementById('editParkingMessage');
+            
+            const data = {
+                user_id: parseInt(document.getElementById('edit_user_id').value),
+                vehicle_plate: document.getElementById('edit_vehicle_plate').value,
+                spot_number: document.getElementById('edit_spot_number').value,
+                apartment: document.getElementById('edit_apartment').value,
+                block: document.getElementById('edit_block').value
+            };
+
+            try {
+                const response = await fetch(`/parking_spot/${parkingId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.style.display = 'block';
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    setTimeout(() => {
+                        closeModal('editParkingModal');
+                        loadVehicles();
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao atualizar vaga';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/current_user');
+                if (!response.ok) {
+                    throw new Error('Not logged in');
+                }
+                const user = await response.json();
+                document.getElementById('userName').textContent = user.name;
+            } catch (error) {
+                console.error('Error loading user info:', error);
+                window.location.href = '/';
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                });
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+            }
+        }
+
+        // Add this to your existing window.onload or put it at the end of your script
+        loadUserInfo();
+
+        // Update button onclick handlers
+        document.querySelector('#users .button').onclick = () => openModal('userModal');
+        document.querySelector('#parking .button').onclick = () => openModal('parkingModal');
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

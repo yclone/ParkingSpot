@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Carro</title>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light pastel blue */
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .registration-container {
+            background-color: #ffffff; /* White */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333; /* Darker text */
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #add8e6; /* Light pastel blue */
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #87ceeb; /* Slightly darker blue */
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background-color: #90EE90;
+            color: #006400;
+        }
+        .error {
+            background-color: #FFB6C1;
+            color: #8B0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h2>Cadastro de Carro</h2>
+        <div id="message" class="message"></div>
+        <form id="carForm" onsubmit="handleSubmit(event)">
+            <select id="user_id" required>
+                <option value="">Selecione o Proprietário</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required>
+            <input type="text" id="spot_number" placeholder="Número da Vaga" required>
+            <input type="text" id="apartment" placeholder="Apartamento" required>
+            <input type="text" id="block" placeholder="Bloco" required>
+            <button type="submit">Cadastrar Carro</button>
+        </form>
+    </div>
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const messageDiv = document.getElementById('message');
+            
+            const data = {
+                user_id: parseInt(document.getElementById('user_id').value),
+                vehicle_plate: document.getElementById('vehicle_plate').value,
+                spot_number: document.getElementById('spot_number').value,
+                apartment: document.getElementById('apartment').value,
+                block: document.getElementById('block').value
+            };
+
+            try {
+                const response = await fetch('/register_parking_spot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                messageDiv.textContent = result.message;
+                messageDiv.style.display = 'block';
+                
+                if (response.ok) {
+                    messageDiv.className = 'message success';
+                    document.getElementById('carForm').reset();
+                } else {
+                    messageDiv.className = 'message error';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Erro ao cadastrar veículo';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

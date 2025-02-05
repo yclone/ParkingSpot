@@ -1,0 +1,8 @@
+src/instance/
+*.pyc
+__pycache__/
+.env
+venv/
+.venv/
+*.db
+*.sqlite3
