@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, redirect
-from models.user import db
-from routes.user_routes import user_bp, create_initial_user
-from routes.parking_routes import parking_bp
+from src.models.user import db
+from src.routes.user_routes import user_bp, create_initial_user
+from src.routes.parking_routes import parking_bp
 import os
 
 app = Flask(__name__, 
