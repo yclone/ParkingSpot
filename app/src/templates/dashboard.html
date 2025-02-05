@@ -217,9 +217,9 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-item" onclick="showSection('users')">Gerenciar Usuários</div>
-        <div class="sidebar-item" onclick="showSection('parking')">Gerenciar Vagas</div>
+    <div class="sidebar" aria-label="Sidebar Menu">
+        <div class="sidebar-item" onclick="showSection('users')" role="button" aria-pressed="false" tabindex="0">Gerenciar Usuários</div>
+        <div class="sidebar-item" onclick="showSection('parking')" role="button" aria-pressed="false" tabindex="0">Gerenciar Vagas</div>
     </div>
 
     <div class="topbar">
@@ -229,51 +229,61 @@
         </div>
     </div>
 
-    <div class="content">
+    <div class="content" aria-live="polite">
         <div id="users" class="section">
             <h2>Gerenciamento de Usuários</h2>
             <button class="button" onclick="openModal('userModal')">Novo Usuário</button>
-            <div class="grid" id="users-grid"></div>
+            <div class="grid" id="users-grid" aria-live="polite"></div>
         </div>
 
         <div id="parking" class="section">
             <h2>Gerenciamento de Vagas</h2>
             <button class="button" onclick="openModal('parkingModal')">Nova Vaga</button>
-            <div class="grid" id="vehicles-grid"></div>
+            <div class="grid" id="vehicles-grid" aria-live="polite"></div>
         </div>
     </div>
 
     <!-- User Registration Modal -->
-    <div id="userModal" class="modal">
+    <div id="userModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="userModalTitle">
         <div class="modal-content">
             <span class="close" onclick="closeModal('userModal')">&times;</span>
-            <h2>Cadastro de Usuário</h2>
-            <div id="userMessage" class="message"></div>
+            <h2 id="userModalTitle">Cadastro de Usuário</h2>
+            <div id="userMessage" class="message" role="alert" aria-live="assertive"></div>
             <form id="userForm" onsubmit="handleUserSubmit(event)">
-                <input type="text" id="nome" placeholder="Nome" required>
-                <input type="text" id="sobrenome" placeholder="Sobrenome" required>
-                <input type="email" id="email" placeholder="E-mail" required>
-                <input type="text" id="username" placeholder="Username" required>
-                <input type="password" id="password" placeholder="Senha" required>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" placeholder="Nome" required aria-required="true">
+                <label for="sobrenome">Sobrenome:</label>
+                <input type="text" id="sobrenome" placeholder="Sobrenome" required aria-required="true">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" placeholder="E-mail" required aria-required="true">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Username" required aria-required="true">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" placeholder="Senha" required aria-required="true">
                 <button class="button" type="submit">Cadastrar</button>
             </form>
         </div>
     </div>
 
     <!-- Parking Spot Registration Modal -->
-    <div id="parkingModal" class="modal">
+    <div id="parkingModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="parkingModalTitle">
         <div class="modal-content">
             <span class="close" onclick="closeModal('parkingModal')">&times;</span>
-            <h2>Cadastro de Vaga</h2>
-            <div id="parkingMessage" class="message"></div>
+            <h2 id="parkingModalTitle">Cadastro de Vaga</h2>
+            <div id="parkingMessage" class="message" role="alert" aria-live="assertive"></div>
             <form id="parkingForm" onsubmit="handleParkingSubmit(event)">
-                <select id="user_id" required>
+                <label for="user_id_parking">Proprietário:</label>
+                <select id="user_id_parking" required aria-required="true">
                     <option value="">Selecione o Proprietário</option>
                 </select>
-                <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required>
-                <input type="text" id="spot_number" placeholder="Número da Vaga" required>
-                <input type="text" id="apartment" placeholder="Apartamento" required>
-                <input type="text" id="block" placeholder="Bloco" required>
+                <label for="vehicle_plate">Placa do Veículo:</label>
+                <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required aria-required="true">
+                <label for="spot_number">Número da Vaga:</label>
+                <input type="text" id="spot_number" placeholder="Número da Vaga" required aria-required="true">
+                <label for="apartment">Apartamento:</label>
+                <input type="text" id="apartment" placeholder="Apartamento" required aria-required="true">
+                <label for="block">Bloco:</label>
+                <input type="text" id="block" placeholder="Bloco" required aria-required="true">
                 <button class="button" type="submit">Cadastrar</button>
             </form>
         </div>
@@ -281,17 +291,22 @@
 
     <!-- Add these modals after your existing modals -->
     <!-- Edit User Modal -->
-    <div id="editUserModal" class="modal">
+    <div id="editUserModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="editUserModalTitle">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editUserModal')">&times;</span>
-            <h2>Editar Usuário</h2>
-            <div id="editUserMessage" class="message"></div>
+            <h2 id="editUserModalTitle">Editar Usuário</h2>
+            <div id="editUserMessage" class="message" role="alert" aria-live="assertive"></div>
             <form id="editUserForm" onsubmit="handleEditUserSubmit(event)">
                 <input type="hidden" id="edit_user_id">
-                <input type="text" id="edit_nome" placeholder="Nome" required>
-                <input type="text" id="edit_sobrenome" placeholder="Sobrenome" required>
-                <input type="email" id="edit_email" placeholder="E-mail" required>
-                <input type="text" id="edit_username" placeholder="Username" required>
+                <label for="edit_nome">Nome:</label>
+                <input type="text" id="edit_nome" placeholder="Nome" required aria-required="true">
+                <label for="edit_sobrenome">Sobrenome:</label>
+                <input type="text" id="edit_sobrenome" placeholder="Sobrenome" required aria-required="true">
+                <label for="edit_email">E-mail:</label>
+                <input type="email" id="edit_email" placeholder="E-mail" required aria-required="true">
+                <label for="edit_username">Username:</label>
+                <input type="text" id="edit_username" placeholder="Username" required aria-required="true">
+                <label for="edit_password">Nova Senha (opcional):</label>
                 <input type="password" id="edit_password" placeholder="Nova Senha (opcional)">
                 <button class="button" type="submit">Atualizar</button>
             </form>
@@ -299,26 +314,57 @@
     </div>
 
     <!-- Edit Parking Modal -->
-    <div id="editParkingModal" class="modal">
+    <div id="editParkingModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="editParkingModalTitle">
         <div class="modal-content">
             <span class="close" onclick="closeModal('editParkingModal')">&times;</span>
-            <h2>Editar Vaga</h2>
-            <div id="editParkingMessage" class="message"></div>
+            <h2 id="editParkingModalTitle">Editar Vaga</h2>
+            <div id="editParkingMessage" class="message" role="alert" aria-live="assertive"></div>
             <form id="editParkingForm" onsubmit="handleEditParkingSubmit(event)">
                 <input type="hidden" id="edit_parking_id">
-                <select id="edit_user_id" required>
+                <label for="edit_user_id">Proprietário:</label>
+                <select id="edit_user_id" required aria-required="true">
                     <option value="">Selecione o Proprietário</option>
                 </select>
-                <input type="text" id="edit_vehicle_plate" placeholder="Placa do Veículo" required>
-                <input type="text" id="edit_spot_number" placeholder="Número da Vaga" required>
-                <input type="text" id="edit_apartment" placeholder="Apartamento" required>
-                <input type="text" id="edit_block" placeholder="Bloco" required>
+                <label for="edit_vehicle_plate">Placa do Veículo:</label>
+                <input type="text" id="edit_vehicle_plate" placeholder="Placa do Veículo" required aria-required="true">
+                <label for="edit_spot_number">Número da Vaga:</label>
+                <input type="text" id="edit_spot_number" placeholder="Número da Vaga" required aria-required="true">
+                <label for="edit_apartment">Apartamento:</label>
+                <input type="text" id="edit_apartment" placeholder="Apartamento" required aria-required="true">
+                <label for="edit_block">Bloco:</label>
+                <input type="text" id="edit_block" placeholder="Bloco" required aria-required="true">
                 <button class="button" type="submit">Atualizar</button>
             </form>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.4.1/axe.min.js"></script>
     <script>
+        // Accessibility check
+        if (typeof axe !== 'undefined') {
+            axe.configure({
+                rules: [
+                    {
+                        id: 'color-contrast',
+                        enabled: true
+                    },
+                    {
+                        id: 'image-alt',
+                        enabled: true
+                    }
+                ]
+            });
+
+            axe.run().then(results => {
+                if (results.violations.length) {
+                    console.warn('Accessibility Violations:', results.violations);
+                    // Optionally, display violations in the UI
+                }
+            });
+        } else {
+            console.warn('Axe not loaded');
+        }
+
         function showSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.section').forEach(section => {
@@ -333,6 +379,7 @@
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
+            event.currentTarget.setAttribute("aria-pressed", "true");
 
             // Load data for the selected section
             if (sectionId === 'users') {
@@ -419,17 +466,22 @@
         }
 
         function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'block';
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'block';
+            modal.setAttribute('aria-hidden', 'false');
+            modal.focus();
             if (modalId === 'parkingModal') {
-                loadUsersForSelect();
+                loadUsersForSelect('user_id_parking');
             }
         }
 
         function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
         }
 
-        async function loadUsersForSelect(selectId = 'user_id') {
+        async function loadUsersForSelect(selectId = 'user_id_parking') {
             const response = await fetch('/users');
             const users = await response.json();
             const select = document.getElementById(selectId);
@@ -486,7 +538,7 @@
             const messageDiv = document.getElementById('parkingMessage');
             
             const data = {
-                user_id: parseInt(document.getElementById('user_id').value),
+                user_id: parseInt(document.getElementById('user_id_parking').value),
                 vehicle_plate: document.getElementById('vehicle_plate').value,
                 spot_number: document.getElementById('spot_number').value,
                 apartment: document.getElementById('apartment').value,
@@ -641,9 +693,19 @@
         // Close modal when clicking outside
         window.onclick = function(event) {
             if (event.target.className === 'modal') {
-                event.target.style.display = 'none';
+                closeModal(event.target.id);
             }
         }
+
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === "Escape") {
+                const openModal = document.querySelector('.modal[style*="display: block"]');
+                if (openModal) {
+                    closeModal(openModal.id);
+                }
+            }
+        });
     </script>
 </body>
 </html>

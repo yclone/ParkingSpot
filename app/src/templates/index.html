@@ -62,10 +62,12 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
+        <h2 id="login-title">Login</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)" aria-labelledby="login-title">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Username" required aria-required="true">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Password" required aria-required="true">
             <div class="button-group">
                 <button type="submit">Login</button>
                 <button class="register-button" onclick="window.location.href='/register_user'">Cadastrar Usuário</button>

@@ -59,19 +59,24 @@
 </head>
 <body>
     <div class="registration-container">
-        <h2>Cadastro de Carro</h2>
-        <div id="message" class="message"></div>
-        <form id="carForm" onsubmit="handleSubmit(event)">
-            <select id="user_id" required>
+        <h2 id="car-register-title">Cadastro de Carro</h2>
+        <div id="message" class="message" role="alert" aria-live="polite"></div>
+        <form id="carForm" onsubmit="handleSubmit(event)" aria-labelledby="car-register-title">
+            <label for="user_id">Proprietário:</label>
+            <select id="user_id" required aria-required="true">
                 <option value="">Selecione o Proprietário</option>
                 {% for user in users %}
                     <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</option>
                 {% endfor %}
             </select>
-            <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required>
-            <input type="text" id="spot_number" placeholder="Número da Vaga" required>
-            <input type="text" id="apartment" placeholder="Apartamento" required>
-            <input type="text" id="block" placeholder="Bloco" required>
+            <label for="vehicle_plate">Placa do Veículo:</label>
+            <input type="text" id="vehicle_plate" placeholder="Placa do Veículo" required aria-required="true">
+            <label for="spot_number">Número da Vaga:</label>
+            <input type="text" id="spot_number" placeholder="Número da Vaga" required aria-required="true">
+            <label for="apartment">Apartamento:</label>
+            <input type="text" id="apartment" placeholder="Apartamento" required aria-required="true">
+            <label for="block">Bloco:</label>
+            <input type="text" id="block" placeholder="Bloco" required aria-required="true">
             <button type="submit">Cadastrar Carro</button>
         </form>
     </div>
