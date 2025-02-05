@@ -1,7 +1,14 @@
+import sys
+from pathlib import Path
+
+# Add the parent directory to Python path
+app_dir = str(Path(__file__).parent.parent)
+sys.path.insert(0, app_dir)
+
 from flask import Flask, render_template, session, redirect
-from models.user import db
-from routes.user_routes import user_bp, create_initial_user
-from routes.parking_routes import parking_bp
+from src.models.user import db
+from src.routes.user_routes import user_bp, create_initial_user
+from src.routes.parking_routes import parking_bp
 import os
 
 app = Flask(__name__, 
@@ -13,7 +20,7 @@ os.makedirs(app.instance_path, exist_ok=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'parking.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.urandom(24)  # Adicionar chave secreta para sessão
+app.config['SECRET_KEY'] = 'your-secret-key'  # Adicionar chave secreta para sessão
 
 db.init_app(app)
 

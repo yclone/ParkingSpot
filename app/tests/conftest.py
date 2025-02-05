@@ -3,9 +3,9 @@ import sys
 import os
 from pathlib import Path
 
-# Add both project root and app directory to Python path
-project_root = str(Path(__file__).parent.parent)
-sys.path.insert(0, project_root)
+# Add the app directory to Python path
+app_dir = str(Path(__file__).parent.parent)
+sys.path.insert(0, app_dir)
 
 from src.app import app
 from src.models.user import db
