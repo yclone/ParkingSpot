@@ -1,5 +1,5 @@
-from flask import Blueprint, request, jsonify, session, render_template
-from src.models.user import User, db
+from flask import Blueprint, request, jsonify, session, render_template, redirect
+from models.user import User, db
 
 user_bp = Blueprint('user', __name__)
 

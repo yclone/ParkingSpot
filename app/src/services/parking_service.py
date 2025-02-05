@@ -1,4 +1,4 @@
-from src.models.parking import ParkingSpot, db
+from models.parking import ParkingSpot, db
 
 class ParkingService:
     @staticmethod

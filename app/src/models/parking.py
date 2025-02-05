@@ -1,4 +1,4 @@
-from src.models.user import db
+from .user import db
 
 class ParkingSpot(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template
-from src.services.parking_service import ParkingService
-from src.models.user import User, db
-from src.models.parking import ParkingSpot
+from services.parking_service import ParkingService
+from models.user import User, db
+from models.parking import ParkingSpot
 
 parking_bp = Blueprint('parking', __name__)
 
