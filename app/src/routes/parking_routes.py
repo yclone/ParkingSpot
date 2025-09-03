@@ -3,6 +3,7 @@ from services.parking_service import ParkingService
 from models.user import User
 from models.parking import ParkingSpot
 from models.user import db
+import logging
 
 parking_bp = Blueprint('parking', __name__)
 
@@ -16,10 +17,13 @@ def register_parking_spot():
     try:
         data = request.get_json()
         ParkingService.create_parking_spot(data)
+        logging.info(f"Vehicle {data['vehicle_plate']} registered successfully")
         return jsonify({'message': 'Veículo cadastrado com sucesso!'}), 201
     except ValueError as e:
+        logging.warning(f"Error registering vehicle: {str(e)}")
         return jsonify({'message': str(e)}), 400
     except Exception as e:
+        logging.error(f"Error registering vehicle: {str(e)}")
         return jsonify({'message': f'Erro ao cadastrar veículo: {str(e)}'}), 500
 
 @parking_bp.route('/parking_spots', methods=['GET'])

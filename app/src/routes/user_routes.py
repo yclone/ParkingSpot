@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session, render_template
 from models.user import User, db
+import logging
 
 user_bp = Blueprint('user', __name__)
 
@@ -7,6 +8,11 @@ user_bp = Blueprint('user', __name__)
 def register_user():
     try:
         data = request.get_json()
+        # Check if email or username is already registered
+        if User.query.filter_by(email=data['email']).first() or User.query.filter_by(username=data['username']).first():
+            logging.warning('Attempt to register with existing email or username')
+            return jsonify({'message': 'Usuário já cadastrado no sistema!'}), 400
+        
         user = User(
             first_name=data['first_name'],
             last_name=data['last_name'],
@@ -17,9 +23,11 @@ def register_user():
 
         db.session.add(user)
         db.session.commit()
-        return jsonify({'message': 'Usuário cadastrado com sucesso!'}), 201
+        logging.info(f'User {user.username} registered successfully')
+        return jsonify({'message': 'Usuário cadastrado com sucesso!', 'user_id': user.id}), 201
     except Exception as e:
         db.session.rollback()
+        logging.error(f'Error registering user: {str(e)}')
         return jsonify({'message': f'Erro ao cadastrar usuário: {str(e)}'}), 400
 
 @user_bp.route('/login', methods=['POST'])
@@ -31,11 +39,15 @@ def login():
         if user and user.check_password(data['password']):
             session['user_id'] = user.id
             session['user_name'] = f"{user.first_name} {user.last_name}"
+            logging.info(f'User {user.username} logged in successfully')
             return jsonify({'message': 'Login successful'}), 200
         
+        logging.warning('Invalid login attempt')
         return jsonify({'message': 'Username ou senha inválidos'}), 401
     except Exception as e:
+        logging.error(f'Error during login: {str(e)}')
         return jsonify({'message': f'Erro no login: {str(e)}'}), 500
+
 
 @user_bp.route('/users', methods=['GET'])
 def get_users():
@@ -109,6 +121,6 @@ def create_initial_user():
             admin.password = 'admin123'
             db.session.add(admin)
             db.session.commit()
-            print("Usuário inicial criado com sucesso!")
+            logging.info("Usuário inicial criado com sucesso!")
     except Exception as e:
-        print(f"Erro ao criar usuário inicial: {str(e)}")
+        logging.error(f"Erro ao criar usuário inicial: {str(e)}")
