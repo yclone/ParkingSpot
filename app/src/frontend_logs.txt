@@ -1,0 +1,3 @@
+2025-09-03T20:08:44.913Z - API inicializada com sucesso.
+2025-09-03T20:11:31.872Z - API inicializada com sucesso.
+2025-09-03T20:13:29.281Z - API inicializada com sucesso.

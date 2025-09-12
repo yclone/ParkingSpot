@@ -1,0 +1,54 @@
+/* Estilo para a página de login com tons pasteis */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f1f1; /* Fundo pastel */
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f1f1; /* Fundo pastel */
+}
+
+.login-box {
+  background-color: #ffffff; /* Branco para contraste */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 24px;
+  color: #6c757d; /* Cinza pastel */
+  margin-bottom: 20px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #6c757d; /* Cinza pastel */
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #5a6268; /* Tom mais escuro para hover */
+}

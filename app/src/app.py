@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, redirect
 from models.user import db
 from routes.user_routes import user_bp, create_initial_user
 from routes.parking_routes import parking_bp
+from routes.log_routes import log_bp
+from flask_cors import CORS
 import os
 import logging
 
@@ -28,8 +30,12 @@ app.config['SECRET_KEY'] = os.urandom(24)  # Adicionar chave secreta para sessã
 
 db.init_app(app)
 
+# Adicionar suporte a CORS
+CORS(app)
+
 app.register_blueprint(user_bp)
 app.register_blueprint(parking_bp)
+app.register_blueprint(log_bp)
 
 @app.route('/')
 def index():

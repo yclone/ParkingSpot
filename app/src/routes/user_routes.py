@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session, render_template
+from flask import Blueprint, request, jsonify, session
 from models.user import User, db
 import logging
 
@@ -106,8 +106,8 @@ def logout():
 @user_bp.route('/dashboard')
 def dashboard():
     if 'user_id' in session:
-        return render_template('dashboard.html')
-    return redirect('/')
+        return jsonify({'message': 'Bem-vindo ao dashboard!'})
+    return jsonify({'message': 'Usuário não autenticado'}), 401
 
 def create_initial_user():
     try:

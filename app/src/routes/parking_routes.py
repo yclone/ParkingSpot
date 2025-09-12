@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
 from services.parking_service import ParkingService
 from models.user import User
 from models.parking import ParkingSpot
@@ -10,7 +10,10 @@ parking_bp = Blueprint('parking', __name__)
 @parking_bp.route('/register_car', methods=['GET'])
 def register_car_page():
     users = User.query.all()
-    return render_template('register_car.html', users=users)
+    return jsonify([{
+        'id': user.id,
+        'name': f"{user.first_name} {user.last_name}"
+    } for user in users])
 
 @parking_bp.route('/register_parking_spot', methods=['POST'])
 def register_parking_spot():
